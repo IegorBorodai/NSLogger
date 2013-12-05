@@ -472,7 +472,6 @@
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				3D4EA21C0F385B6100DF81E6 /* CopyFiles */,
 				3DE8CE8712AE4A74005C83D0 /* CopyFiles */,
-				D4F414041829766D00E88648 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -569,20 +568,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\nif [ -z \"$CODE_SIGN_IDENTITY\" ] || [ \"$CODE_SIGN_IDENTITY\" == \"Don't Code Sign\" ] ; then\n    osascript -e \"tell application \\\"Xcode\\\"\n            display alert \\\"Your build is not code signed\\\" message \\\"Signing your build will prevent an issue with SSL connections failing the first time and requiring a NSLogger restart (or even failing altogether on OS X 10.7).\\n\\nTo sign your build, open the NSLogger target and select your developer certificate in the Code Signing Identity build setting.\\n\\nFurther instructions can be found in the README.txt file in the project folder.\\\"\n            end tell\"\nfi\n";
-		};
-		D4F414041829766D00E88648 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /usr/bin/python;
-			shellScript = "# Extremely ugly little Python script to ensure all frameworks under a directory are signed.\n# Use as part of a shell run phase.\n\nimport subprocess\nimport os\n\nlocation = os.environ['BUILT_PRODUCTS_DIR'] + \"/\" + os.environ['FRAMEWORKS_FOLDER_PATH']\n\n# Retrieve any frameworks\n\n\nfindoutput = subprocess.check_output('find \\\"' + location + '\\\" -name *.framework -print', shell=True)\n\nfindlist = filter(None,findoutput.split('\\n'))\nfor line in reversed(findlist):\n    framework = line.rstrip()\n    frameworkname = os.path.basename(os.path.normpath(framework))\n    checkline = subprocess.check_output('codesign -v \\\"' + framework + '\\\" ; exit 0', shell=True, stderr=subprocess.STDOUT)\n    if \"code object is not signed at all\" in checkline:\n        print \"Signing \" + frameworkname + \"...\"\n        signcmd = subprocess.check_output('codesign --verbose --sign \\\"' + os.environ['CODE_SIGN_IDENTITY'] + '\\\" \\\"' + framework + '\\\"', shell=True, stderr=subprocess.STDOUT)\n";
+			shellScript = "#!/bin/bash\nif [ -z \"$CODE_SIGN_IDENTITY\" ] || [ \"$CODE_SIGN_IDENTITY\" == \"Don't Code Sign\" ] ; then\n    osascript -e \"tell application \\\"Xcode\\\"\n            display alert \\\"Your build won't be signed\\\" message \\\"Signing your build will prevent an issue with SSL connections failing the first time and requiring a NSLogger restart (or even failing altogether on OS X 10.7).\\n\\nTo sign your build, open the NSLogger project build settings and select your developer certificate in the Code Signing Identity build setting.\\n\\nFurther instructions can be found in the README.txt file in the project folder.\\\"\n            end tell\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -650,7 +636,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -671,7 +656,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -691,7 +675,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -706,7 +689,6 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = NSLogger;
-				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -714,7 +696,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -727,7 +708,6 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = NSLogger;
-				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -743,6 +723,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -756,6 +737,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				SDKROOT = macosx;
 			};
 			name = Release;
