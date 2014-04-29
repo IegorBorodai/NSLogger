@@ -33,13 +33,13 @@
  * SOFTWARE,   EVEN  IF   ADVISED  OF   THE  POSSIBILITY   OF  SUCH   DAMAGE.
  * 
  */
-#import <unistd.h>
-#import <pthread.h>
-#import <dispatch/once.h>
-#import <libkern/OSAtomic.h>
-#import <Foundation/Foundation.h>
-#import <CoreFoundation/CoreFoundation.h>
-#import <SystemConfiguration/SystemConfiguration.h>
+@import Darwin.POSIX.unistd;
+@import Darwin.POSIX.pthread;
+@import Dispatch.once;
+@import Darwin.libkern.OSAtomic;
+@import Foundation;
+@import CoreFoundation;
+@import SystemConfiguration;
 #if !TARGET_OS_IPHONE
 #import <CoreServices/CoreServices.h>
 #endif

@@ -47,7 +47,7 @@
 	#import <sys/utsname.h>
 	#import <dlfcn.h>
 #elif ALLOW_COCOA_USE
-	#import <UIKit/UIKit.h>
+	@import UIKit;
 #endif
 #import <fcntl.h>
 
